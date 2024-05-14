@@ -20,7 +20,11 @@ namespace svg
 
         dimensions.x = xml_elem->IntAttribute("width");
         dimensions.y = xml_elem->IntAttribute("height");
-        
+
+        for (const XMLAttribute *attr = xml_elem->FirstAttribute(); attr != nullptr; attr = attr->Next())
+        // tamos a iterar sobre os nodes e quando percorrer todos vai ser null ptr e para
+            if(attr->Name() == )
+            svg_elements.push_back();
         // TODO complete code -->
         
     }

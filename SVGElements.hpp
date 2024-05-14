@@ -5,7 +5,6 @@
 #include "Color.hpp"
 #include "Point.hpp"
 #include "PNGImage.hpp"
-
 namespace svg
 {
     class SVGElement
@@ -38,5 +37,59 @@ namespace svg
         Point center;
         Point radius;
     };
+    class Circle : public SVGElement
+    {
+        public:
+            Circle(const Color &fill, const Point &center, const int radius);
+            void draw(PNGImage &img) const override;
+
+        private:
+            Color fill;
+            Point center;
+            int radius;
+    };
+    class Polyline : public SVGElement
+    {
+        public: 
+            Polyline(std::string sequence, const Color &fill);
+            void draw(PNGImage &img) const override;
+        
+        private:
+            Color fill;
+            std::vector<Point> vector; 
+    };
+    class Line : public SVGElement
+    {
+        public:
+            Line(Point start, Point end, const Color &fill);
+            void draw(PNGImage &img) const override;
+        
+        private:
+            Color fill;
+            Point start;
+            Point end;
+
+    };
+
+    class Polygon : public SVGElement
+    {
+        public:
+            Polygon(std::string sequence, const Color &fill);
+            void draw(PNGImage &img) const override;
+        private:
+            Color fill;
+            std::vector<Point> vector; 
+    };
+    class Rectangle : public SVGElement
+    {
+        public:
+            Rectangle(Point topLeft,const Color &fill,int width,int height);
+            void draw(PNGImage &img) const override;
+        private:
+            Point topLeft;
+            Color fill;
+            int width, height;
+    };
+
 }
 #endif
