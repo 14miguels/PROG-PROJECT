@@ -17,79 +17,25 @@ namespace svg
     {
         img.draw_ellipse(center, radius, fill);
     }
-    Circle::Circle(const Color &fill, const Point &center, const int radius)
-    {
-        this->center = center;
-        this->fill = fill;
-        this->radius = radius;
-    }
-    void Circle::draw(PNGImage &img) const{
-        img.draw_ellipse(center,{radius,radius},fill);
-    }
-    Polyline::Polyline(std::string sequence, const Color &fill)
-    {
-        this->fill = fill;
-        size_t start = 0;
-
-        while (start < sequence.size())
-        {
-          size_t comma_pos = sequence.find(',',start);
-          size_t space_pos = sequence.find(',',start);
-
-          int first = std::stoi(sequence.substr(start,comma_pos));
-          int second = std::stoi(sequence.substr(comma_pos+1,space_pos - comma_pos - 1));
-
-          vector.push_back({first,second});          
-
-        }
-    }
+    Circle::Circle(const Color &fill, const Point &center, const Point radius) 
+    : Ellipse(fill, center,  radius){}
+    
+    Polyline::Polyline(const std::vector<Point> &vector, const Color &stroke) : stroke(stroke), vector(vector) {}
     void Polyline::draw(PNGImage &img) const{
-        for(auto i = 0; i < vector.size() - 1;i++){
-            img.draw_line(vector[i],vector[i+1],fill);
+        for(size_t i = 0; i < vector.size() - 1;i++){
+            img.draw_line(vector[i],vector[i+1],stroke);
         }
 
     }
-    Line::Line(Point start, Point end, const Color &fill){
-        this->start = start;
-        this->end = end;
-        this->fill = fill;
-    }
-    void Line::draw(PNGImage &img) const{
-        img.draw_line(start,end,fill);
-    }
-    Polygon::Polygon(std::string sequence, const Color &fill){
-        this->fill = fill;
-
-        size_t start = 0;
-
-        while (start < sequence.size())
-        {
-          size_t comma_pos = sequence.find(',',start);
-          size_t space_pos = sequence.find(',',start);
-
-          int first = std::stoi(sequence.substr(start,comma_pos));
-          int second = std::stoi(sequence.substr(comma_pos+1,space_pos - comma_pos - 1));
-
-          vector.push_back({first,second});          
-
-        }        
-    }
+    Line::Line(const Point &p1,const Point &p2, const Color &stroke): 
+    Polyline(std::vector<Point>({p1,p2}), stroke){};
+    
+    Polygon::Polygon(const std::vector<Point> vector, const Color &fill) : vector(vector), fill(fill) {}
     void Polygon::draw(PNGImage &img) const{
         img.draw_polygon(vector,fill);
     }
 
-    Rectangle::Rectangle(Point topLeft,const Color &fill,int width,int height){
-        this->fill = fill;
-        this->topLeft = topLeft;
-        this->width = width;
-        this->height = height;    
-    }
-    void Rectangle::draw(PNGImage &img) const{
-        for(int i = 0; i < height; i++){
-            Point p = {topLeft.x,topLeft.y+i};
-            Point t = {topLeft.x + width,topLeft.y +i};
-            img.draw_line(p,t,fill);
-        }
-    }
+    Rectangle::Rectangle(const Color &fill,const std::vector<Point> vector) 
+    : Polygon(vector, fill) {}
 
 }

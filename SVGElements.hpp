@@ -37,58 +37,47 @@ namespace svg
         Point center;
         Point radius;
     };
-    class Circle : public SVGElement
+    class Circle : public Ellipse
     {
         public:
-            Circle(const Color &fill, const Point &center, const int radius);
-            void draw(PNGImage &img) const override;
-
-        private:
-            Color fill;
-            Point center;
-            int radius;
+            Circle(const Color &fill, const Point &center, const Point radius);
     };
     class Polyline : public SVGElement
     {
         public: 
-            Polyline(std::string sequence, const Color &fill);
+            Polyline(const std::vector<Point> &vector, const Color &stroke);
             void draw(PNGImage &img) const override;
         
         private:
-            Color fill;
+            Color stroke;
             std::vector<Point> vector; 
     };
-    class Line : public SVGElement
+    class Line : public Polyline
     {
         public:
-            Line(Point start, Point end, const Color &fill);
-            void draw(PNGImage &img) const override;
-        
+            Line(const Point &p1, const Point &p2, const Color &stroke);
         private:
-            Color fill;
-            Point start;
-            Point end;
-
+            Point p1;
+            Point p2;
+            Color stroke;
     };
 
     class Polygon : public SVGElement
     {
         public:
-            Polygon(std::string sequence, const Color &fill);
+            Polygon(const std::vector<Point> vector, const Color &fill);
             void draw(PNGImage &img) const override;
         private:
-            Color fill;
             std::vector<Point> vector; 
+            Color fill;
     };
-    class Rectangle : public SVGElement
+    class Rectangle : public Polygon
     {
         public:
-            Rectangle(Point topLeft,const Color &fill,int width,int height);
-            void draw(PNGImage &img) const override;
-        private:
-            Point topLeft;
-            Color fill;
-            int width, height;
+            Rectangle(const Color &fill, std::vector<Point> vector);
+        // private:
+        //     Color fill;
+        //     std::vector<Point> vector;
     };
 
 }
