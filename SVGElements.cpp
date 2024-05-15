@@ -3,9 +3,7 @@
 namespace svg
 {
     // These must be defined!
-    SVGElement::SVGElement() {
-
-    }
+    SVGElement::SVGElement() {}
     SVGElement::~SVGElement() {}
 
     // Ellipse (initial code provided)
