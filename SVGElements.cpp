@@ -30,12 +30,12 @@ namespace svg
     Line::Line(const Point &p1,const Point &p2, const Color &stroke): 
     Polyline(std::vector<Point>({p1,p2}), stroke){};
     
-    Polygon::Polygon(const std::vector<Point> vector, const Color &fill) : vector(vector), fill(fill) {}
+    Polygon::Polygon(std::vector<Point> &vector, const Color &fill) : vector(vector), fill(fill) {}
     void Polygon::draw(PNGImage &img) const{
         img.draw_polygon(vector,fill);
     }
 
-    Rectangle::Rectangle(const Color &fill,const std::vector<Point> vector) 
+    Rectangle::Rectangle(std::vector<Point> &vector, const Color &fill) 
     : Polygon(vector, fill) {}
 
 }

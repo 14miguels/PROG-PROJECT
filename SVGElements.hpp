@@ -65,7 +65,7 @@ namespace svg
     class Polygon : public SVGElement
     {
         public:
-            Polygon(const std::vector<Point> vector, const Color &fill);
+            Polygon(std::vector<Point> &vector, const Color &fill);
             void draw(PNGImage &img) const override;
         private:
             std::vector<Point> vector; 
@@ -74,7 +74,7 @@ namespace svg
     class Rectangle : public Polygon
     {
         public:
-            Rectangle(const Color &fill, std::vector<Point> vector);
+            Rectangle(std::vector<Point> &vector, const Color &fill);
         // private:
         //     Color fill;
         //     std::vector<Point> vector;

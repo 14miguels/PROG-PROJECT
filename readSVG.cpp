@@ -116,14 +116,16 @@ namespace svg
                 y=child->IntAttribute("y");
                 width=child->IntAttribute("width");
                 height=child->IntAttribute("height");
+
                 vector.push_back(Point({x,y}));
-                vector.push_back(Point({x+width, y}));
-                vector.push_back(Point({x, y+height}));
-                vector.push_back(Point({x+width, y+height}));
+                vector.push_back(Point({x + width -1, y}));
+                vector.push_back(Point({x + width-1, y + height-1}));
+                vector.push_back(Point({x, y + height-1}));
+                
 
                 const char* fillChar = child->Attribute("fill");
                 Color fill = parse_color(fillChar);
-                Rectangle* rectangle = new Rectangle(fill, vector);
+                Rectangle* rectangle = new Rectangle(vector, fill);
                 svg_elements.push_back(rectangle);
             }
         }
