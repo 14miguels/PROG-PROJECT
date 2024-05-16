@@ -56,10 +56,6 @@ namespace svg
     {
         public:
             Line(const Point &p1, const Point &p2, const Color &stroke);
-        private:
-            Point p1;
-            Point p2;
-            Color stroke;
     };
 
     class Polygon : public SVGElement

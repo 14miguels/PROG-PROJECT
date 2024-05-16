@@ -3,7 +3,10 @@
 #include "SVGElements.hpp"
 #include "external/tinyxml2/tinyxml2.h"
 #include <sstream>
+#include <iostream>
 #include <vector>
+#include "Point.cpp"
+#include "Point.hpp"
 
 using namespace std;
 using namespace tinyxml2;
@@ -25,18 +28,11 @@ namespace svg
 //         return translation;
 // }
     Point parseTranslation(std::string& transformValue) {
-        Point translation;
-        size_t start = transformValue.find("translate(");
-        if (start == std::string::npos) {
-            return translation;
-        }
+        Point translation = {0,0};
         
-        start += 10;
+        size_t start = 10;
         
         size_t end = transformValue.find(")", start);
-        if (end == std::string::npos) {
-            return translation;
-        }
 
         std::string translationString = transformValue.substr(start, end - start);
 
@@ -53,12 +49,6 @@ namespace svg
         iss >> translation.x >> virg >> translation.y;
 
         return translation;
-    }
-
-
-    void translate(Point point, Point translate){
-        point.x+=translate.x-1;
-        point.y+=translate.y-1;
     }
 
     Point PointCreator(string& sequence){
@@ -104,12 +94,13 @@ namespace svg
                     if (transformstr.find("translate") != std::string::npos)
                     {
                         Point transPoint = parseTranslation(transformstr);
-                        translate(center,transPoint);
+                        Ellipse* ellipse = new Ellipse(fill, center.translate(transPoint), radius);
+                        svg_elements.push_back(ellipse);
                     }
+                } else{
+                    Ellipse* ellipse = new Ellipse(fill, center, radius);
+                    svg_elements.push_back(ellipse);
                 }
-                
-                Ellipse* ellipse = new Ellipse(fill, center, radius);
-                svg_elements.push_back(ellipse);
             }
             if (strcmp(child->Name(),"circle")==0)
             {
@@ -121,8 +112,20 @@ namespace svg
                 radius.y = child->IntAttribute("r");
                 const char* fillChar = child->Attribute("fill");
                 Color fill = parse_color(fillChar);
-                Circle* circle = new Circle(fill, center, radius);
-                svg_elements.push_back(circle);
+                if (child->Attribute("transform"))
+                {
+                    std::string transformstr = child->Attribute("transform");
+                    if (transformstr.find("translate") != std::string::npos)
+                    {
+                        Point transPoint = parseTranslation(transformstr);
+                        Circle* circle = new Circle(fill, center.translate(transPoint), radius);
+                        svg_elements.push_back(circle);
+                    }
+                } else {
+
+                    Circle* circle = new Circle(fill, center, radius);
+                    svg_elements.push_back(circle);
+                }
             }
             if (strcmp(child->Name(),"line")==0)
             {
@@ -133,8 +136,19 @@ namespace svg
                 p2.y=child->IntAttribute("y2");
                 const char* strokeChar = child->Attribute("stroke");
                 Color stroke = parse_color(strokeChar);
-                Line* line = new Line(p1, p2, stroke);
-                svg_elements.push_back(line);
+                if (child->Attribute("transform"))
+                {
+                    std::string transformstr = child->Attribute("transform");
+                    if (transformstr.find("translate") != std::string::npos)
+                    {
+                        Point transPoint = parseTranslation(transformstr);
+                        Line* circle = new Line(p1.translate(transPoint), p2.translate(transPoint), stroke);
+                        svg_elements.push_back(circle);
+                    }
+                } else{
+                    Line* line = new Line(p1, p2, stroke);
+                    svg_elements.push_back(line);
+                }
             }
             if (strcmp(child->Name(),"polyline")==0)
             {
@@ -149,8 +163,25 @@ namespace svg
                 
                 const char* strokeChar = child->Attribute("stroke");
                 Color stroke = parse_color(strokeChar);
-                Polyline* polyline = new Polyline(vector, stroke);
-                svg_elements.push_back(polyline);
+                if (child->Attribute("transform"))
+                {
+                    std::string transformstr = child->Attribute("transform");
+                    if (transformstr.find("translate") != std::string::npos)
+                    {
+                        std::vector<Point> newVector;
+                        for (size_t i = 0; i < vector.size(); i++)
+                        {
+                            Point transPoint = parseTranslation(transformstr);
+                            newVector.push_back(vector[i].translate(transPoint));
+                            Polyline* polyline = new Polyline(newVector, stroke);
+                            svg_elements.push_back(polyline);
+                        }
+                        
+                    }
+                } else{
+                    Polyline* polyline = new Polyline(vector, stroke);
+                    svg_elements.push_back(polyline);
+                }
             }
             if (strcmp(child->Name(),"polygon")==0)
             {
@@ -165,8 +196,26 @@ namespace svg
                 
                 const char* fillChar = child->Attribute("fill");
                 Color fill = parse_color(fillChar);
-                Polygon* polyline = new Polygon(vector, fill);
-                svg_elements.push_back(polyline);
+                if (child->Attribute("transform"))
+                {
+                    std::string transformstr = child->Attribute("transform");
+                    if (transformstr.find("translate") != std::string::npos)
+                    {
+                        std::vector<Point> newVector;
+                        for (size_t i = 0; i < vector.size(); i++)
+                        {
+                            Point transPoint = parseTranslation(transformstr);
+                            newVector.push_back(vector[i].translate(transPoint));
+                            Polygon* polygon = new Polygon(newVector, fill);
+                            svg_elements.push_back(polygon);
+                        }
+                        
+                    }
+                } else{
+
+                    Polygon* polygon = new Polygon(vector, fill);
+                    svg_elements.push_back(polygon);
+                }
             }
             if (strcmp(child->Name(),"rect")==0)
             {
@@ -184,8 +233,26 @@ namespace svg
                 
                 const char* fillChar = child->Attribute("fill");
                 Color fill = parse_color(fillChar);
-                Rectangle* rectangle = new Rectangle(vector, fill);
-                svg_elements.push_back(rectangle);
+                if (child->Attribute("transform"))
+                {
+                    std::string transformstr = child->Attribute("transform");
+                    if (transformstr.find("translate") != std::string::npos)
+                    {
+                        std::vector<Point> newVector;
+                        for (size_t i = 0; i < vector.size(); i++)
+                        {
+                            Point transPoint = parseTranslation(transformstr);
+                            newVector.push_back(vector[i].translate(transPoint));
+                            Rectangle* rect = new Rectangle(newVector, fill);
+                            svg_elements.push_back(rect);
+                        }
+                        
+                    }
+                } else{
+
+                    Rectangle* rect = new Rectangle(vector, fill);
+                    svg_elements.push_back(rect);
+                }
             }
         }
     }
