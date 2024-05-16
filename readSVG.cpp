@@ -11,6 +11,56 @@ using namespace tinyxml2;
 namespace svg
 {
 
+//     Point parseTranslation(std::string& transformValue) {
+//         Point translation;
+//         std::stringstream ss(transformValue);
+//         size_t start = transformValue.find("translate(");
+//         size_t end = transformValue.find(")");
+//         transformValue = transformValue.substr(start + 10, end);
+//         size_t space = transformValue.find(" ");
+//         std::string n1=transformValue.substr(0, space);
+//         std::string n2=transformValue.substr(space+1, transformValue.size());
+//         // char space = ' ';
+//         // iss >> translation.x >> space >> translation.y;
+//         return translation;
+// }
+    Point parseTranslation(std::string& transformValue) {
+        Point translation;
+        size_t start = transformValue.find("translate(");
+        if (start == std::string::npos) {
+            return translation;
+        }
+        
+        start += 10;
+        
+        size_t end = transformValue.find(")", start);
+        if (end == std::string::npos) {
+            return translation;
+        }
+
+        std::string translationString = transformValue.substr(start, end - start);
+
+        for (size_t i = 0; i < translationString.size(); ++i) {
+            if (translationString[i] == ' ') {
+                translationString[i] = ',';
+            }
+        }
+
+        char virg = ',';
+
+        std::istringstream iss(translationString);
+
+        iss >> translation.x >> virg >> translation.y;
+
+        return translation;
+    }
+
+
+    void translate(Point point, Point translate){
+        point.x+=translate.x-1;
+        point.y+=translate.y-1;
+    }
+
     Point PointCreator(string& sequence){
         Point ponto;
         std::istringstream iss(sequence);
@@ -48,6 +98,16 @@ namespace svg
                 radius.y = child->IntAttribute("ry");
                 const char* fillChar = child->Attribute("fill");
                 Color fill = parse_color(fillChar);
+                if (child->Attribute("transform"))
+                {
+                    std::string transformstr = child->Attribute("transform");
+                    if (transformstr.find("translate") != std::string::npos)
+                    {
+                        Point transPoint = parseTranslation(transformstr);
+                        translate(center,transPoint);
+                    }
+                }
+                
                 Ellipse* ellipse = new Ellipse(fill, center, radius);
                 svg_elements.push_back(ellipse);
             }
@@ -117,12 +177,11 @@ namespace svg
                 width=child->IntAttribute("width");
                 height=child->IntAttribute("height");
 
-                vector.push_back(Point({x,y}));
-                vector.push_back(Point({x + width -1, y}));
-                vector.push_back(Point({x + width-1, y + height-1}));
-                vector.push_back(Point({x, y + height-1}));
+                vector.push_back(Point({x, y}));
+                vector.push_back(Point({x + width - 1, y}));
+                vector.push_back(Point({x + width - 1, y + height - 1}));
+                vector.push_back(Point({x, y + height - 1}));
                 
-
                 const char* fillChar = child->Attribute("fill");
                 Color fill = parse_color(fillChar);
                 Rectangle* rectangle = new Rectangle(vector, fill);
