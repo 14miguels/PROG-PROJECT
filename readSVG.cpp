@@ -14,6 +14,28 @@ using namespace tinyxml2;
 namespace svg
 {
 
+    Point PointCreator(string& sequence){
+        Point ponto;
+        std::istringstream iss(sequence);
+        char virg = ',';
+        iss>>ponto.x >> virg >> ponto.y;
+        return ponto;
+    }
+
+    Point parseOrigin(std::string &transformOrigin) {
+        Point origin;
+        std::istringstream iss(transformOrigin);
+        size_t space = transformOrigin.find(" ");
+        std::string n1=transformOrigin.substr(0,space);
+        std::string n2=transformOrigin.substr(space+1, transformOrigin.size());
+
+        origin.x = std::stoi(n1);
+        origin.y = std::stoi(n2);
+
+        return origin;
+    }
+
+
     Point parseTranslation(std::string& transformValue) {
         Point translation = {0,0};
         
@@ -49,34 +71,26 @@ namespace svg
         std::string rotationValue = transformstr.substr(start, end - start);
 
         std::stringstream iss(rotationValue);
-        int angle;
-        iss >> angle;
-        rotation = angle;
+        iss >> rotation;
 
         return rotation;
     }
 
-    Point PointCreator(string& sequence){
-        Point ponto;
-        std::istringstream iss(sequence);
-        char virg = ',';
-        iss>>ponto.x >> virg >> ponto.y;
-        return ponto;
+
+    int parseScaling(std::string transformstr){
+        int scaling;
+
+        size_t start = 6;
+
+        size_t end = transformstr.find(")", start);
+        
+
+        std::string scaleValue = transformstr.substr(start, end - start);
+
+        std::stringstream iss(scaleValue);
+        iss >> scaling;
+        return scaling;
     }
-
-    Point parseOrigin(std::string &transformOrigin) {
-        Point origin;
-        std::istringstream iss(transformOrigin);
-        size_t space = transformOrigin.find(" ");
-        std::string n1=transformOrigin.substr(0,space);
-        std::string n2=transformOrigin.substr(space+1, transformOrigin.size());
-
-        origin.x = std::stoi(n1);
-        origin.y = std::stoi(n2);
-
-        return origin;
-    }
-
 
     void readSVG(const string& svg_file, Point& dimensions, vector<SVGElement *>& svg_elements)
     {
@@ -130,6 +144,13 @@ namespace svg
                         Ellipse* ellipse = new Ellipse(fill, center, radius);
                         svg_elements.push_back(ellipse);
                     }
+                    else if (transformstr.find("scale") != std::string::npos) {
+                        int scaling = parseScaling(transformstr);
+                        radius = radius.scale(origin, scaling);
+                        if (center.x != origin.x || center.y != origin.y )center = center.scale(origin, scaling);
+                        Ellipse* ellipse = new Ellipse(fill, center, radius);
+                        svg_elements.push_back(ellipse);
+                    }
                 } else {
                     Ellipse* ellipse = new Ellipse(fill, center, radius);
                     svg_elements.push_back(ellipse);
@@ -157,6 +178,12 @@ namespace svg
                     {
                         int degrees = parseRotation(transformstr);
                         center = center.rotate(origin, degrees);
+                        Circle* circle = new Circle(fill, center, radius);
+                        svg_elements.push_back(circle);
+                    } else if (transformstr.find("scale") != std::string::npos) {
+                        int scaling = parseScaling(transformstr);
+                        radius = radius.scale(origin, scaling);
+                        center = center.scale(origin, scaling);
                         Circle* circle = new Circle(fill, center, radius);
                         svg_elements.push_back(circle);
                     }
@@ -189,6 +216,12 @@ namespace svg
                         int degrees = parseRotation(transformstr);
                         p1 = p1.rotate(origin, degrees);
                         p2 = p2.rotate(origin, degrees);
+                        Line* line = new Line(p1, p2, stroke);
+                        svg_elements.push_back(line);
+                    } else if (transformstr.find("scale") != std::string::npos) {
+                        int scaling = parseScaling(transformstr);
+                        p1 = p1.scale(origin, scaling);
+                        p2 = p2.scale(origin, scaling);
                         Line* line = new Line(p1, p2, stroke);
                         svg_elements.push_back(line);
                     }
@@ -235,6 +268,14 @@ namespace svg
                             Polyline* polyline = new Polyline(newVector, stroke);
                             svg_elements.push_back(polyline);
                         }
+                    } else if (transformstr.find("scale") != std::string::npos) {
+                        std::vector<Point> newVector;
+                        for (size_t i = 0; i < vector.size(); i++){
+                            int scaling = parseScaling(transformstr);
+                            newVector.push_back(vector[i].scale(origin, scaling));
+                            Polyline* polyline = new Polyline(newVector, stroke);
+                            svg_elements.push_back(polyline);
+                    }
                     }
                 } else{
                     Polyline* polyline = new Polyline(vector, stroke);
@@ -280,6 +321,14 @@ namespace svg
                             Polygon* polygon = new Polygon(newVector, fill);
                             svg_elements.push_back(polygon);
                         }
+                    } else if (transformstr.find("scale") != std::string::npos) {
+                        std::vector<Point> newVector;
+                        for (size_t i = 0; i < vector.size(); i++){
+                            int scaling = parseScaling(transformstr);
+                            newVector.push_back(vector[i].scale(origin, scaling));
+                            Polygon* polygon = new Polygon(newVector, fill);
+                            svg_elements.push_back(polygon);
+                    }
                     }
                 } else{
 
@@ -328,6 +377,14 @@ namespace svg
                             Rectangle* rect = new Rectangle(newVector, fill);
                             svg_elements.push_back(rect);
                         }
+                    } else if (transformstr.find("scale") != std::string::npos) {
+                        std::vector<Point> newVector;
+                        for (size_t i = 0; i < vector.size(); i++){
+                            int scaling = parseScaling(transformstr);
+                            newVector.push_back(vector[i].scale(origin, scaling));
+                            Rectangle* rect = new Rectangle(newVector, fill);
+                            svg_elements.push_back(rect);
+                    }
                     }
                 } else{
 

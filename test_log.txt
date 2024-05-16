@@ -12,19 +12,9 @@ pixel (0 25): expected 255 0 0 got 255 255 255
 >>>> [11] group_3 <<<<
 pixel (0 250): expected 255 255 255 got 255 0 0
 >>>> [12] group_4 <<<<
-45
-45
-45
-45
-45
-45
-45
-45
-45
-45
 pixel (10 260): expected 255 0 0 got 255 255 255
 >>>> [13] group_5 <<<<
-pixel (10 260): expected 255 0 0 got 255 255 255
+test: PNGImage.cpp:62: svg::Color& svg::PNGImage::at(int, int): Assertion `x >= 0 && x < width_' failed.
 >>>> [14] group_6 <<<<
 pixel (20 220): expected 0 0 255 got 255 255 255
 >>>> [15] group_7 <<<<
@@ -45,73 +35,27 @@ pixel (36 80): expected 255 0 0 got 255 255 255
 >>>> [29] rotate_line <<<<
 >>>> [30] rotate_line_with_origin <<<<
 >>>> [31] rotate_polygon <<<<
--10
--10
--10
--10
--20
--20
--20
--20
--30
--30
--30
--30
 pixel (66 90): expected 255 255 255 got 255 0 0
 >>>> [32] rotate_polygon_with_origin <<<<
--20
--20
--20
--20
--10
--10
--10
--10
-0
-0
-0
-0
-10
-10
-10
-10
-20
-20
-20
-20
 >>>> [33] rotate_polyline <<<<
 >>>> [34] rotate_polyline_with_origin <<<<
 >>>> [35] rotate_rect <<<<
 >>>> [36] rotate_rect_with_origin <<<<
 >>>> [37] scale_circle <<<<
-pixel (20 60): expected 255 0 0 got 255 255 255
 >>>> [38] scale_circle_with_origin <<<<
-pixel (100 300): expected 0 0 255 got 255 255 255
+test: PNGImage.cpp:62: svg::Color& svg::PNGImage::at(int, int): Assertion `x >= 0 && x < width_' failed.
 >>>> [39] scale_ellipse <<<<
-pixel (20 60): expected 255 0 0 got 255 255 255
 >>>> [40] scale_ellipse_with_origin <<<<
-pixel (100 300): expected 0 0 255 got 255 255 255
+test: PNGImage.cpp:62: svg::Color& svg::PNGImage::at(int, int): Assertion `x >= 0 && x < width_' failed.
 >>>> [41] scale_line <<<<
-pixel (100 100): expected 255 0 0 got 255 255 255
 >>>> [42] scale_line_with_origin <<<<
-pixel (50 50): expected 255 0 0 got 255 255 255
 >>>> [43] scale_polygon <<<<
-pixel (50 50): expected 0 0 255 got 255 0 0
 >>>> [44] scale_polygon_with_origin <<<<
-pixel (50 50): expected 255 255 0 got 255 255 255
 >>>> [45] scale_polyline <<<<
-pixel (40 40): expected 0 0 255 got 255 255 255
 >>>> [46] scale_polyline_with_origin <<<<
-pixel (20 160): expected 0 255 0 got 255 255 255
 >>>> [47] scale_rect <<<<
-pixel (0 20): expected 255 0 0 got 255 255 255
 >>>> [48] scale_rect_with_origin <<<<
-pixel (55 50): expected 0 255 0 got 255 255 255
 >>>> [49] transform_several <<<<
-180
-180
-180
-pixel (75 150): expected 0 0 255 got 255 255 255
 >>>> [50] translate_circle <<<<
 >>>> [51] translate_ellipse <<<<
 >>>> [52] translate_line <<<<
