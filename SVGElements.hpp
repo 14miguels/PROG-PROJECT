@@ -25,7 +25,7 @@ namespace svg
                  std::vector<SVGElement *> &svg_elements);
     void convert(const std::string &svg_file,
                  const std::string &png_file);
-
+    //initiate class for Ellipse
     class Ellipse : public SVGElement
     {
     public:
@@ -37,11 +37,13 @@ namespace svg
         Point center;
         Point radius;
     };
+    // initiate subclass for Circle from Ellipse
     class Circle : public Ellipse
     {
         public:
             Circle(const Color &fill, const Point &center, const Point radius);
     };
+    //initiate class for Polyline
     class Polyline : public SVGElement
     {
         public: 
@@ -52,12 +54,13 @@ namespace svg
             Color stroke;
             std::vector<Point> vector; 
     };
+    // initiate subclass for Line from Polyline
     class Line : public Polyline
     {
         public:
             Line(const Point &p1, const Point &p2, const Color &stroke);
     };
-
+    //initiate class for Polygon
     class Polygon : public SVGElement
     {
         public:
@@ -67,6 +70,7 @@ namespace svg
             std::vector<Point> vector; 
             Color fill;
     };
+    // initiate subclass for Rectangle from Polygon
     class Rectangle : public Polygon
     {
         public:
